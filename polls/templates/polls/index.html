@@ -5,23 +5,23 @@
 </head>
 <body>
 
-    <h1>Poll Questions</h1>
-    <ul>
+    <h1 id="polls-title">Poll Questions</h1>
+    <ul id="polls-list">
         {% for question in questions %}
-            <li>
+            <li id="question-{{ question.id }}">
                 {% if question.total_votes >= 50 %}
                 (🔥 Hot)
                 {% elif question.total_votes >= 10 %}
                 (🥰 Warm)
                 {% endif %}
-                <a href="{% url 'polls:detail' question.id %}" value="{{ question.total_votes }}">
+                <a id="question-link-{{ question.id }}" href="{% url 'polls:detail' question.id %}" value="{{ question.total_votes }}">
                     {{ question.question_text }}
                 </a>
 
                 <!-- ปุ่ม Reset Votes ถัดจากคำถาม -->
-                <form action="{% url 'polls:reset_votes' question.id %}" method="post" style="display:inline;">
+                <form id="reset-form-{{ question.id }}" action="{% url 'polls:reset_votes' question.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
-                    <button>Reset Votes</button>
+                    <button id="reset-button-{{ question.id }}">Reset Votes</button>
                 </form>
 
             </li>
