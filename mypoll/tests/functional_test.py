@@ -1,60 +1,71 @@
+import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import unittest
+import time
 
 class PollAppFunctionalTest(unittest.TestCase):
-    
-    def setUp(self):
-        """เปิดเว็บเบราว์เซอร์ก่อนเริ่มการทดสอบ"""
-        options = webdriver.ChromeOptions()
-        self.browser = webdriver.Chrome(options=options)
-        self.browser.implicitly_wait(5)  # รอให้ elements โหลด
 
-    def tearDown(self):
-        """ปิดเบราว์เซอร์หลังจากทดสอบเสร็จ"""
-        self.browser.quit()
+    @classmethod
+    def setUpClass(cls):
+        """เริ่มต้น WebDriver ครั้งเดียวสำหรับทั้งคลาส"""
+        cls.driver = webdriver.Chrome()
+        cls.driver.get("http://127.0.0.1:8000/polls/")
 
-    def test_sompong_takes_poll(self):
-        """สมปองเข้าร่วมโพลและโหวตตัวเลือกที่ชอบ"""
+    def test_vote_until_hot(self):
+        driver = self.driver
 
-        # เปิดหน้าโพล
-        self.browser.get('http://127.0.0.1:8000/polls/')
-        
-        # เช็คว่ามีคำถามอย่างน้อย 1 ข้อ
-        questions = self.browser.find_elements(By.TAG_NAME, "li")
-        self.assertGreater(len(questions), 0, "ไม่มีคำถามให้โหวต!")
+        # รีเซ็ตคะแนน
+        driver.find_element(By.ID, "reset-button-1").click()
+        time.sleep(0.05)
 
-        # เลือกคำถามแรก
-        first_question_link = questions[0].find_element(By.TAG_NAME, "a")
-        first_question_link.click()
+        while True:
+            driver.find_element(By.ID, "question-link-1").click()
+            time.sleep(0.05)
 
-        # เช็คว่าไปที่หน้าโหวตแล้วหรือนัง
-        self.assertIn("/polls/", self.browser.current_url)
-        choices = self.browser.find_elements(By.NAME, "choice")
-        # เช็คว่ามีตัวเลือกอย่างน้อย 2
-        self.assertGreaterEqual(len(choices), 2, "ตัวเลือกไม่ครบ!")
+            driver.find_element(By.ID, "choice-1").click()
+            driver.find_element(By.ID, "submit-button").click()
+            time.sleep(0.05)
 
-        # สมปองเลือก "หมา" แล้วคลิ๊ก
-        choice_dog = self.browser.find_element(By.CSS_SELECTOR, "input[value='1']")
-        choice_dog.click()
-        
-        # กดปุ่มส่งคำตอบ
-        submit_button = self.browser.find_element(By.CSS_SELECTOR, "input[type='submit']")
-        submit_button.click()
+            driver.get("http://127.0.0.1:8000/polls/")
+            time.sleep(0.05)
 
-        # ตรวจสอบว่าถูกนำไปยังหน้าผลลัพธ์
-        self.assertIn("/results/", self.browser.current_url)
+            # อ่านค่า vote count
+            question_link = driver.find_element(By.ID, "question-link-1")
+            vote_count = int(question_link.get_attribute("value"))
 
-        # ดูว่าผลโหวตถูกบันทึกแล้ว
-        results = self.browser.find_elements(By.TAG_NAME, "li")
-        self.assertTrue(any("dog -" in result.text.lower() for result in results), "ไม่มีผลโหวตของ 'หมา'!")
-        self.assertTrue(any("cat -" in result.text.lower() for result in results), "ไม่มีผลโหวตของ 'แมว'!")
+            # อ่านข้อความทั้งหมดของ question-1
+            question_text = driver.find_element(By.ID, "question-1").text
 
-        # สมปองกดปุ่ม Back to Polls เพื่อกลับไปที่หน้าคำถาม
-        back_to_polls_link = self.browser.find_element(By.LINK_TEXT, "Back to Polls")
-        back_to_polls_link.click()
-        
-        self.assertIn("/polls/", self.browser.current_url)
+            # กำหนดป้ายกำกับที่ควรจะเป็น
+            expected_label = ""
+            if vote_count >= 50:
+                expected_label = "🔥 Hot"
+            elif vote_count >= 10:
+                expected_label = "🥰 Warm"
 
-if __name__ == '__main__':
+            # ตรวจสอบว่าป้ายกำกับที่แสดงในหน้าเว็บคืออะไร
+            if "🔥 Hot" in question_text:
+                actual_label = "🔥 Hot"
+            elif "🥰 Warm" in question_text:
+                actual_label = "🥰 Warm"
+            else:
+                actual_label = ""
+
+            # ตรวจสอบว่าป้ายกำกับถูกต้อง
+            self.assertEqual(expected_label, actual_label, 
+                             f"Vote {vote_count} expected '{expected_label}' but got '{actual_label}'")
+
+            # แสดงค่า vote_count
+            print(f"vote: {vote_count} ✅ Label check passed ({expected_label})")
+
+            if vote_count >= 55:
+                break
+
+
+    @classmethod
+    def tearDownClass(cls):
+        """ปิด WebDriver เมื่อทดสอบเสร็จ"""
+        cls.driver.quit()
+
+if __name__ == "__main__":
     unittest.main()
