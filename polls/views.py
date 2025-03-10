@@ -26,3 +26,8 @@ def vote(request, question_id):
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/results.html', {'question': question})
+
+def reset_votes(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    question.choice_set.update(votes=0)  # รีเซ็ตคะแนนโหวตทั้งหมดเป็น 0
+    return redirect('polls:index')  # รีเฟรชหน้า index หลังรีเซ็ต
