@@ -16,3 +16,25 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+    
+
+class PrivateQuestion(models.Model):
+    question_text = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.question_text
+    
+    def total_votes(self):
+        return sum(choice.votes for choice in self.privatechoice_set.all())  # Simple sum function
+
+
+class PrivateChoice(models.Model):
+    question = models.ForeignKey(PrivateQuestion, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=100)
+    votes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.choice_text
+
+
+

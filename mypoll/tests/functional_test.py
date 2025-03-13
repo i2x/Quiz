@@ -9,7 +9,7 @@ class PollAppFunctionalTest(unittest.TestCase):
     def setUpClass(cls):
         """เริ่มต้น WebDriver ครั้งเดียวสำหรับทั้งคลาส"""
         cls.driver = webdriver.Chrome()
-        cls.driver.get("http://127.0.0.1:8000/polls/")
+        cls.driver.get("http://localhost:8000/")
 
     def test_vote_until_hot(self):
         driver = self.driver
@@ -26,7 +26,7 @@ class PollAppFunctionalTest(unittest.TestCase):
             driver.find_element(By.ID, "submit-button").click()
             time.sleep(0.05)
 
-            driver.get("http://127.0.0.1:8000/polls/")
+            driver.get("http://localhost:8000/")
             time.sleep(0.05)
 
             # อ่านค่า vote count

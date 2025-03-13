@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Polls</title>
+</head>
+<body>
+
+    <h1 id="polls-title">Poll Questions</h1>
+    <ul id="polls-list">
+        {% for question in questions %}
+            <li id="question-{{ question.id }}">
+                {% if question.total_votes >= 50 %}
+                (🔥 Hot)
+                {% elif question.total_votes >= 10 %}
+                (🥰 Warm)
+                {% endif %}
+                <a id="question-link-{{ question.id }}" href="{% url 'polls:private_detail' question.id %}" value="{{ question.total_votes }}">
+                    {{ question.question_text }}
+                </a>
+
+                <!-- ปุ่ม Reset Votes ถัดจากคำถาม -->
+                <form id="reset-form-{{ question.id }}" action="{% url 'polls:private_reset_votes' question.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button id="reset-button-{{ question.id }}">Reset Votes</button>
+                </form>
+
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

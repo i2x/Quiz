@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ question.question_text }}</title>
+</head>
+<body>
+
+    <h1 id="question-title">{{ question.question_text }}</h1>
+
+    <form id="vote-form" action="{% url  'polls:private_vote' question.id %}" method="post">
+        {% csrf_token %}
+        {% for choice in question.privatechoice_set.all %}
+            <input id="choice-{{ choice.id }}" type="radio" name="choice" value="{{ choice.id }}">
+            <label for="choice-{{ choice.id }}">{{ choice.choice_text }}</label><br>
+        {% endfor %}
+        <input id="submit-button" type="submit" value="Submit">
+    </form>
+
+</body>
+</html>
