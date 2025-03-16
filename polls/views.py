@@ -36,10 +36,11 @@ def reset_votes(request, question_id):
 
 #private
 
-def private_index(request):
-    questions = PrivateQuestion.objects.all()
+def private_index(request, token=None):
+  
+    questions = PrivateQuestion.objects.filter(token=token) 
+    return render(request, 'polls/index_private.html', {'questions': questions, 'token': token})
 
-    return render(request, 'polls/index_private.html', {'questions': questions})
 
 def private_detail(request, question_id):
     question = get_object_or_404(PrivateQuestion, pk=question_id)

@@ -16,6 +16,7 @@ urlpatterns = [
 
     #private
     path('private', views.private_index, name='private_index'),
+    path('private/<str:token>/', views.private_index, name='private_index_with_token'),  # รองรับ token
     path('private/<int:question_id>/', views.private_detail, name='private_detail'),
     path('private/<int:question_id>/vote/', views.private_vote, name='private_vote'),
     path('private/<int:question_id>/results/', views.private_results, name='private_results'),

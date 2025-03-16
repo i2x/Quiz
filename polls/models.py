@@ -20,6 +20,7 @@ class Choice(models.Model):
 
 class PrivateQuestion(models.Model):
     question_text = models.CharField(max_length=200)
+    token = models.CharField(max_length=50)  
 
     def __str__(self):
         return self.question_text
