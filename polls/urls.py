@@ -15,12 +15,12 @@ urlpatterns = [
 
 
     #private
-    path('private', views.private_index, name='private_index'),
-    path('private/<str:token>/', views.private_index, name='private_index_with_token'),  # รองรับ token
-    path('private/<int:question_id>/', views.private_detail, name='private_detail'),
-    path('private/<int:question_id>/vote/', views.private_vote, name='private_vote'),
-    path('private/<int:question_id>/results/', views.private_results, name='private_results'),
-    path('private/<int:question_id>/reset/', views.private_reset_votes, name='private_reset_votes'),  # URL สำหรับ Reset
+    path('private/', views.private_index, name='private_index'),
+    path('private/<str:token>/', views.private_index, name='private_index_with_token'),
+    path('private/<str:token>/<int:question_id>/', views.private_detail, name='private_detail'),
+    path('private/<str:token>/<int:question_id>/vote/', views.private_vote, name='private_vote'),
+    path('private/<str:token>/<int:question_id>/results/', views.private_results, name='private_results'),
+    path('private/<str:token>/<int:question_id>/reset/', views.private_reset_votes, name='private_reset_votes'),
 
 
 

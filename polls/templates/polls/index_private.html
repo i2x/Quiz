@@ -14,12 +14,12 @@
                 {% elif question.total_votes >= 10 %}
                 (🥰 Warm)
                 {% endif %}
-                <a id="question-link-{{ question.id }}" href="{% url 'polls:private_detail' question.id %}" value="{{ question.total_votes }}">
+                <a id="question-link-{{ question.id }}" href="{% url 'polls:private_detail' question.token question.id %}" value="{{ question.total_votes }}">
                     {{ question.question_text }}
                 </a>
 
-                <!-- ปุ่ม Reset Votes ถัดจากคำถาม -->
-                <form id="reset-form-{{ question.id }}" action="{% url 'polls:private_reset_votes' question.id %}" method="post" style="display:inline;">
+                <!-- ปุ่ม Reset Votes พร้อม token -->
+                <form id="reset-form-{{ question.id }}" action="{% url 'polls:private_reset_votes' question.token question.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button id="reset-button-{{ question.id }}">Reset Votes</button>
                 </form>
