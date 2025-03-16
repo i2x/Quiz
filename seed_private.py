@@ -11,17 +11,17 @@ def seed_data():
     questions = [
         {
             "question_text": "Private: What is your favorite hospital?",
-            "token": "hospital",  
+            "token": "hospital_dsfsdfew33f",  
             "choices": ["Bangkok Hospital", "Samitivej", "Bumrungrad", "Rajavithi"]
         },
         {
             "question_text": "Private: What is your fishing preference?",
-            "token": "fishing", 
+            "token": "hospital_dsfsdfew33f", 
             "choices": ["Freshwater", "Saltwater", "Fly Fishing", "Deep Sea"]
         },
         {
             "question_text": "Private: Which sports do you enjoy?",
-            "token": "sport", 
+            "token": "fishing_sdfdsgshewher", 
             "choices": ["Football", "Basketball", "Tennis", "Badminton"]
         },
     ]
